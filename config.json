@@ -1,11 +1,13 @@
 {
-	"port": 3000,
-	"bodyLimit": "200kb",
-	"corsHeaders": ["Link"],
-  "dev": {
-    "mongo":"mongodb://127.0.0.1:27017/mocker"
+  "bodyLimit": "200kb",
+  "corsHeaders": ["Link"],
+  "env": {
+    "dev": {
+      "mongo": "mongodb://127.0.0.1:27017/mocker"
+    },
+    "prod": {
+      "mongo": "mongodb://"
+    }
   },
-  "prod": {
-    "mongo":"mongodb://"
-  }
+  "port": 3000
 }
