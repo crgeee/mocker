@@ -1,0 +1,15 @@
+{
+  "name": "mockdata",
+  "version": "1.0.0",
+  "description": "solution for providing mock data via an api",
+  "main": "index.js",
+  "scripts": {
+     "start":"json-server -w db.json -p 3001",
+     "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Christopher Gonzalez",
+  "license": "ISC",
+  "dependencies": {
+    "json-server": "0.12.1"
+  }
+}
