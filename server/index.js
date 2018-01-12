@@ -1,4 +1,4 @@
-import api from './api';
+import api from './routes';
 import bodyParser from 'body-parser';
 import colors from 'colors';
 import config from '../config.json';

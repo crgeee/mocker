@@ -1,16 +1,19 @@
 import {Router} from 'express';
 import {version} from '../../package.json';
+import geo from './geo.js';
+import soi from './soi.js';
 
 export default({config, db}) => {
-  let api = Router();
+  let router = Router();
 
   // mount the resources
-  // api.use('/users', users);
+  router.use('/geo', geo);
+  router.use('/soi', soi);
 
   // perhaps expose some API metadata at the root
-  api.get('/', (req, res) => {
+  router.get('/', (req, res) => {
     res.send('<p style="font-family: \'Lucida Console\', Courier, monospace;">mocker ' + version + ' is running!!</p>');
   });
 
-  return api;
+  return router;
 };
