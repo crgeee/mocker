@@ -33,7 +33,7 @@ initializeDb(db => {
   app.use('/', api({config, db}));
 
   app.use((req, res, next) => {
-    const err = new Error('Not Found');
+    const err = new Error(config.consolePrefix + 'Not Found');
     err.status = 404;
     next(err);
   });
@@ -50,7 +50,9 @@ initializeDb(db => {
   });
 
   app.listen(port, function() {
-    let msg = 'Application started on port ' + port + '!';
+    let msg = config.consolePrefix + 'Application started on localhost:' + port + '.';
     console.log(msg.green);
+    let msg2 = config.consolePrefix + 'For debugging via Fiddler, you may need to use your NIC IP address instead of localhost.';
+    console.log(msg2.magenta);
   });
 });

@@ -5,12 +5,12 @@ import mongoose from 'mongoose';
 /* eslint-disable no-console */
 
 export default callback => {
-  console.log('Connecting to mongodb database...');
+  console.log(config.consolePrefix.magenta + 'Connecting to mongodb database...'.magenta);
 
   // default to production
   let connection = config.env.dev.mongo;
   if (process.env.NODE_ENV == 'production') {
-    console.log('NODE_ENV=production...');
+    console.log(config.consolePrefix.magenta + 'NODE_ENV=production set.'.magenta);
     connection = config.env.prod.mongo;
   }
 
@@ -19,11 +19,11 @@ export default callback => {
   let db = mongoose.connection;
 
   db.on('error', err => {
-    console.error('Error while connecting to DB: ${err.message}');
+    console.error(config.consolePrefix.red + 'Error while connecting to DB: ${err.message}'.red);
   });
 
   db.once('open', () => {
-    console.log('Successfully connected to MongoDB...');
+    console.log(config.consolePrefix.green + 'Successfully connected to MongoDB.'.green);
     callback(db);
   });
 };
