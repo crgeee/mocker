@@ -4,41 +4,54 @@ import colors from 'colors';
 import config from '../config.json';
 import cors from 'cors';
 import express from 'express';
+import fs from 'fs';
+import https from 'https';
 import initializeDb from './db.js';
 import middleware from './middleware';
 import morgan from 'morgan';
 import path from 'path';
 
 /* eslint-disable no-console */
+console.log(config.consolePrefix.magenta + 'Starting up server application.'.magenta);
 
-const app = express();
+const server = express();
 const port = process.env.PORT || config.port;
+const sslPort = config.sslPort;
 
 // logging
-app.use(morgan('common'));
+server.use(morgan('common'));
 
 // 3rd party middleware
-app.use(cors({exposedHeaders: config.corsHeaders}));
+server.use(cors({exposedHeaders: config.corsHeaders}));
 
 // limits for body parsing
-app.use(bodyParser.json({limit: config.bodyLimit}));
-app.use(bodyParser.urlencoded({extended: false}));
+server.use(bodyParser.json({limit: config.bodyLimit}));
+server.use(bodyParser.urlencoded({extended: false}));
+
+// ssl
+let sslOptions = {
+  key: fs.readFileSync('./keys/key.pem'),
+  cert: fs.readFileSync('./keys/cert.pem'),
+  passphrase: '12345678',
+  // requestCert: false,
+  // rejectUnauthorized: false
+};
 
 // connect to db
 initializeDb(db => {
   // internal middleware
-  app.use(middleware({config, db}));
+  server.use(middleware({config, db}));
 
   // api router
-  app.use('/', api({config, db}));
+  server.use('/', api({config, db}));
 
-  app.use((req, res, next) => {
+  server.use((req, res, next) => {
     const err = new Error(config.consolePrefix + 'Not Found');
     err.status = 404;
     next(err);
   });
 
-  app.use((err, req, res, next) => {
+  server.use((err, req, res, next) => {
     res.status(err.status || 500);
     res.json({
       error: {
@@ -49,10 +62,14 @@ initializeDb(db => {
     });
   });
 
-  app.listen(port, function() {
-    let msg = config.consolePrefix + 'Application started on localhost:' + port + '.';
+  server.listen(port, function() {
+    let msg = config.consolePrefix + 'HTTP server started on localhost:' + port + '.';
     console.log(msg.green);
-    let msg2 = config.consolePrefix + 'For debugging via Fiddler, you may need to use your NIC IP address instead of localhost.';
-    console.log(msg2.magenta);
+  });
+
+  const sslServer = https.createServer(sslOptions, server);
+  sslServer.listen(sslPort, function() {
+    let msg2 = config.consolePrefix + 'HTTPS server started at localhost:' + sslPort + '.';
+    console.log(msg2.green);
   });
 });

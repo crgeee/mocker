@@ -5,8 +5,6 @@ import mongoose from 'mongoose';
 /* eslint-disable no-console */
 
 export default callback => {
-  console.log(config.consolePrefix.magenta + 'Connecting to mongodb database...'.magenta);
-
   // default to production
   let connection = config.env.dev.mongo;
   if (process.env.NODE_ENV == 'production') {
@@ -15,6 +13,9 @@ export default callback => {
   }
 
   // connect
+  console.log(config.consolePrefix.magenta + 'Connecting to mongodb database...'.magenta);
+  console.log(config.consolePrefix.magenta + 'mongodb connection string: '.magenta + connection.magenta);
+  mongoose.Promise = global.Promise;
   mongoose.connect(connection, {useMongoClient: true});
   let db = mongoose.connection;
 
@@ -23,7 +24,7 @@ export default callback => {
   });
 
   db.once('open', () => {
-    console.log(config.consolePrefix.green + 'Successfully connected to MongoDB.'.green);
+    console.log(config.consolePrefix.green + 'Successfully connected to mongodb.'.green);
     callback(db);
   });
 };
