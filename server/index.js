@@ -14,6 +14,7 @@ import path from 'path';
 /* eslint-disable no-console */
 console.log(config.consolePrefix.magenta + 'Starting up server application.'.magenta);
 
+const isDev = process.env.NODE_ENV !== 'production';
 const server = express();
 const port = process.env.PORT || config.port;
 const sslPort = config.sslPort;
